@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Bookshare
+=======
+# BOOKSHARE
+>>>>>>> 98a0b298283166628d28e408958388e9977d1cc5
 
 Welcome to our awesome project! Below are the steps for contributing to this repository.
 
