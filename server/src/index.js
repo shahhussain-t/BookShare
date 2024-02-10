@@ -1,20 +1,31 @@
-const express=require('express')
-const cors = require('cors');
-const app=express()
 require('dotenv').config();
+const cors = require('cors');
+const express=require('express')
+const bodyParser = require('body-parser');
+const userRoutes = require('./routes/userRouter');
+const bookRoutes = require('./routes/bookRouter');
+const connectDB = require('./db/connection');
 
+const app=express()
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(bodyParser.json());
 
 app.use(cors({ origin: 'http://localhost:5173' }));
 
+connectDB();
 
 
 const PORT = process.env.PORT || 3000; 
 
 
-app.get('/api',(req,res)=>{
+app.use(express.json());
 
-  res.json({data:"hello world"})
-})
+
+
+app.use('/api/users', userRoutes);
+app.use('/api/books', bookRoutes);
 
 
 
