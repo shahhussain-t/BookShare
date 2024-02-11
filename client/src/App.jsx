@@ -1,5 +1,6 @@
 import React, { useEffect,useState } from 'react';
-
+import Contact from './component/Contact';
+import '../src/style/main.css';
 
 function App() {
 const [data,setData]=useState("")
@@ -23,6 +24,7 @@ const [data,setData]=useState("")
   return (
     <>
      <h1>{data.data}</h1>
+      <Contact />
     </>
   )
 }
