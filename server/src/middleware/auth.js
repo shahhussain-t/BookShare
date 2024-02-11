@@ -1,22 +1,32 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-
 const authMiddleware = async (req, res, next) => {
     try {
-        const token = req.header('Authorization').replace('Bearer ', '');
-        if (!token) {
-            throw new Error('Authentication failed');
+        let token = req.header('Authorization'); 
+        const refreshToken = req.cookies.refreshToken;
+        if (!token && !refreshToken) {
+          
+            throw new Error('Authorization token not provided');
+        }
+
+        if(token){
+            token = token.replace('Bearer ', '');
+        }
+
+        if(refreshToken){
+            token=refreshToken
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.userId);
         if (!user) {
             throw new Error('User not found');
         }
-        req.user = user; // Set the user object on the request
+        req.user = user;
         next();
     } catch (error) {
-        res.status(401).json({ message: 'Authentication failed' });
+        res.status(401).json({ message: error.message });
     }
 };
 
-module.exports = authMiddleware;
+
+module.exports=authMiddleware

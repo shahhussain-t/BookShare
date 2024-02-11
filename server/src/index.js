@@ -4,6 +4,7 @@ const express=require('express')
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRouter');
 const bookRoutes = require('./routes/bookRouter');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./db/connection');
 
 const app=express()
@@ -17,10 +18,18 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 connectDB();
 
 
+
+
+
+
+
+
 const PORT = process.env.PORT || 3000; 
 
 
 app.use(express.json());
+app.use(cookieParser());
+
 
 
 

@@ -18,9 +18,12 @@ const userController = {
             const token = await generateAccessToken(user);
             const refreshToken = await generateRefreshToken(user);
             // Send the token in the header with the Bearer scheme
-            res.header('Authorization', 'Bearer ' + token).json({ message: 'User registered successfully' ,token:token});
+            res.setHeader('Authorization', 'Bearer ' + token);
             // Send the refresh token in a cookie with the httpOnly and secure flags
-         ;
+            res.cookie('refreshToken', token, { httpOnly: true, secure: true });
+
+            res.json({ message: 'User registered successfully' });
+       
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -41,38 +44,41 @@ const userController = {
             const token = await generateAccessToken(user);
             const refreshToken = await generateRefreshToken(user);
             // Send the token in the header with the Bearer scheme
-            res.header('Authorization', 'Bearer ' + token).json({ message: 'Login successful' });
-            // Send the refresh token in a cookie with the httpOnly and secure flags
           
+            res.setHeader('Authorization', 'Bearer ' + token);
+           
+            // Send the refresh token in a cookie with the httpOnly and secure flags
+            res.cookie('refreshToken', token, { httpOnly: true, secure: true }); // Use res.cookie instead of req.cookie
+
+            res.json({message:"login succesfull"})
+
+
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     },
-
     refresh: async (req, res) => {
         try {
-            // Get the refresh token from the cookie
             const refreshToken = req.cookies.refreshToken;
             if (!refreshToken) {
                 return res.status(401).json({ message: 'No refresh token provided' });
             }
-            // Verify the refresh token
             const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-            // Find the user by the decoded userId
             const user = await User.findById(decoded.userId);
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             }
-            // Generate a new access token
             const token = await generateAccessToken(user);
-            // Send the token in the header with the Bearer scheme
-            res.header('Authorization', 'Bearer ' + token).json({ message: 'Token refreshed' });
+            res.setHeader('Authorization', 'Bearer ' + token);
+            res.cookie('access_token', token, { httpOnly: true, secure: true, maxAge: 3600000 }); // Expires in 1 hour
+            res.json({ message: 'Token refreshed' });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     },
+    
 
-    test: async (req, res) => {
+    auth: async (req, res) => {
         try {
             // Get the user from the request object
             const user = req.user;
