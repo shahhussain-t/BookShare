@@ -17,8 +17,7 @@ const bookSchema = new mongoose.Schema({
     images: [String],
     uploader: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     location: {
         city: String,
